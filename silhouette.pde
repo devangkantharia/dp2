@@ -8,7 +8,11 @@
 // http://www.silentlycrashing.net
 
 import org.openkinect.processing.*;
+import gab.opencv.*;
 
+OpenCV opencv;
+
+PImage src, canny, scharr, sobel;
 Kinect2 kinect2;
 
 // Depth image
@@ -28,9 +32,10 @@ void setup() {
   kinect2.initDepth();
   kinect2.initRegistered();
   kinect2.initDevice();
-
+  
   // Blank image
   depthImg = new PImage(kinect2.depthWidth, kinect2.depthHeight);
+  opencv = new OpenCV(this, depthImg);
 }
 
 void draw() {
@@ -52,14 +57,17 @@ void draw() {
 
   // Draw the thresholded image
   depthImg.updatePixels();
-  image(depthImg, kinect2.depthWidth, 0);
-
+  // image(depthImg, kinect2.depthWidth, 0);
   fill(0);
-  text("TILT: " + angle, 10, 20);
+  // text("TILT: " + angle, 10, 20);
   text("THRESHOLD: [" + minDepth + ", " + maxDepth + "]", 10, 36);
+  opencv.findCannyEdges(20,75);
+  canny = opencv.getSnapshot();
+  // opencv.erode();
+  image(canny, kinect2.depthWidth, 0);
 }
 
-// Adjust the angle and the depth threshold min and max
+// Adjust the angle and the depth threshold min and maxaaaaaaaaaaaaaaaa
 void keyPressed() {
   if (key == 'a') {
     minDepth = constrain(minDepth+100, 0, maxDepth);
