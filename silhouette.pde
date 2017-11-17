@@ -12,7 +12,7 @@ import gab.opencv.*;
 
 OpenCV opencv;
 
-PImage src, canny, scharr, sobel;
+PImage canny;
 Kinect2 kinect2;
 
 // Depth image
@@ -40,7 +40,7 @@ void setup() {
 
 void draw() {
   // Draw the raw image
-  image(kinect2.getDepthImage(), 0, 0);
+  // image(kinect2.getDepthImage(), 0, 0);
 
   // Threshold the depth image
   int[] rawDepth = kinect2.getRawDepth();
@@ -61,9 +61,10 @@ void draw() {
   fill(0);
   // text("TILT: " + angle, 10, 20);
   text("THRESHOLD: [" + minDepth + ", " + maxDepth + "]", 10, 36);
+  opencv.loadImage(depthImg);
+  opencv.erode();
   opencv.findCannyEdges(20,75);
   canny = opencv.getSnapshot();
-  // opencv.erode();
   image(canny, kinect2.depthWidth, 0);
 }
 
