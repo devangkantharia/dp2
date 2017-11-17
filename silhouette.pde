@@ -9,6 +9,7 @@
 
 import org.openkinect.processing.*;
 import gab.opencv.*;
+PGraphics pg;
 
 OpenCV opencv;
 
@@ -26,7 +27,7 @@ int maxDepth =  4500; //4.5m
 float angle;
 
 void setup() {
-  size(1280, 480);
+  size(640, 480);
 
   kinect2 = new Kinect2(this);
   kinect2.initDepth();
@@ -36,9 +37,11 @@ void setup() {
   // Blank image
   depthImg = new PImage(kinect2.depthWidth, kinect2.depthHeight);
   opencv = new OpenCV(this, depthImg);
+  pg = createGraphics(kinect2.depthWidth, kinect2.depthHeight);
 }
 
 void draw() {
+  background(loadImage("abc.jpg"));
   // Draw the raw image
   // image(kinect2.getDepthImage(), 0, 0);
 
@@ -48,9 +51,9 @@ void draw() {
   
   for (int i=0; i < rawDepth.length; i++) {
     if (rawDepth[i] >= minDepth && rawDepth[i] <= maxDepth) {
-      depthImg.pixels[i] = color(255);
-    } else {
       depthImg.pixels[i] = color(0);
+    } else {
+      depthImg.pixels[i] = color(255);
     }
   }
   
@@ -58,14 +61,14 @@ void draw() {
   // Draw the thresholded image
   depthImg.updatePixels();
   // image(depthImg, kinect2.depthWidth, 0);
-  fill(0);
+  // fill(255);
   // text("TILT: " + angle, 10, 20);
   text("THRESHOLD: [" + minDepth + ", " + maxDepth + "]", 10, 36);
   opencv.loadImage(depthImg);
   opencv.erode();
   opencv.findCannyEdges(20,75);
   canny = opencv.getSnapshot();
-  image(canny, kinect2.depthWidth, 0);
+  blend(canny, 0, 0, kinect2.depthHeight, kinect2.depthWidth, 0, 0, kinect2.depthHeight, kinect2.depthWidth, OVERLAY);
 }
 
 // Adjust the angle and the depth threshold min and maxaaaaaaaaaaaaaaaa
